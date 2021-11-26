@@ -3,10 +3,13 @@ import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -14,6 +17,8 @@ import javax.swing.JTextField;
 
 public class TarefaFormPanel extends JPanel {
     private AppFrame frame;
+
+    private Tarefa tarefa;
 
     private GridBagLayout layout;
     private GridBagConstraints constraints;
@@ -31,8 +36,26 @@ public class TarefaFormPanel extends JPanel {
         constraints = new GridBagConstraints();
 
         setLayout(layout);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                if (tarefa == null) {
+                    txtId.setText("");
+                    txtNome.setText("");
+                    txtDescricao.setText("");
+                } else {
+                    txtId.setText(Integer.toString(tarefa.getId()));
+                    txtNome.setText(tarefa.getNome());
+                    txtDescricao.setText(tarefa.getDescricao());
+                }
+            }
+        });
 
         criarForm();
+    }
+
+    public void setTarefa(Tarefa tarefa) {
+        this.tarefa = tarefa;
     }
 
     private void criarForm() {
@@ -62,9 +85,45 @@ public class TarefaFormPanel extends JPanel {
         FlowLayout flowLayout = (FlowLayout) btnPanel.getLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
 
-        btnSalvar = new JButton("Salvar");
-        btnPanel.add(btnSalvar);
+        criarBtnSalvar(btnPanel);
+        criarBtnCancelar(btnPanel);
 
+        adicionarComponente(btnPanel, 7, 1, 2, 1);
+    }
+
+    private void criarBtnSalvar(JPanel btnPanel) {
+        btnSalvar = new JButton("Salvar");
+        btnSalvar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (TarefaFormPanel.this.tarefa == null) {
+                    Tarefa novaTarefa = new Tarefa();
+                    novaTarefa.setNome(txtNome.getText());
+                    novaTarefa.setDescricao(txtDescricao.getText());
+
+                    TarefaStorage.inserir(novaTarefa);
+                    JOptionPane.showMessageDialog(TarefaFormPanel.this, 
+                                                  "Tarefa incluída com sucesso", 
+                                                  "Todo App", 
+                                                  JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    tarefa.setNome(txtNome.getText());
+                    tarefa.setDescricao(txtDescricao.getText());
+                    TarefaStorage.atualizar(TarefaFormPanel.this.tarefa);
+                    JOptionPane.showMessageDialog(TarefaFormPanel.this, 
+                                                  "Tarefa atualizada com sucesso", 
+                                                  "Todo App", 
+                                                  JOptionPane.INFORMATION_MESSAGE);
+                }
+
+                    
+                frame.mostrarListPanel();
+            }
+        });
+        btnPanel.add(btnSalvar);
+    }
+
+    private void criarBtnCancelar(JPanel btnPanel) {
         btnCancelar = new JButton("Cancelar");
         btnCancelar.addActionListener(new ActionListener() {
             @Override
@@ -73,8 +132,6 @@ public class TarefaFormPanel extends JPanel {
             }
         });
         btnPanel.add(btnCancelar);
-
-        adicionarComponente(btnPanel, 7, 1, 2, 1);
     }
 
     private void adicionarComponente(JComponent componente, 

@@ -26,5 +26,23 @@ public class Tarefa {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Tarefa outraTarefa = (Tarefa) obj;
+        return id == outraTarefa.getId();
+    }
     
 } // fim da classe Tarefa

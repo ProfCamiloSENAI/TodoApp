@@ -15,6 +15,7 @@ public class TarefaListPanel extends JPanel {
     private JButton btnEditar;
     private JButton btnRemover;
     private JTable tabela;
+    private TarefaTableModel tableModel;
 
     public TarefaListPanel(AppFrame frame) {
         this.frame = frame;
@@ -34,12 +35,18 @@ public class TarefaListPanel extends JPanel {
         btnCriar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.mostrarFormPanel();
+                frame.mostrarFormPanel(null);
             }
         });
         panel.add(btnCriar);
 
         btnEditar = new JButton("Editar");
+        btnEditar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.mostrarFormPanel(tableModel.getTarefa(tabela.getSelectedRow()));
+            }
+        });
         panel.add(btnEditar);
 
         btnRemover = new JButton("Remover");
@@ -51,10 +58,15 @@ public class TarefaListPanel extends JPanel {
     private void criarTabelaPanel() {
         JPanel panel = new JPanel();
 
-        tabela = new JTable();
+        tableModel = new TarefaTableModel(TarefaStorage.listar());
+        tabela = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(tabela);
         panel.add(scrollPane);
 
         add(panel, BorderLayout.CENTER);
+    }
+
+    public void recarregar() {
+        tableModel.carregar(TarefaStorage.listar());
     }
 } // fim da classe TarefaListPanel

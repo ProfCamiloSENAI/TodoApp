@@ -23,12 +23,6 @@ public class AppFrame extends JFrame {
 
         criarCards();
 
-        // TarefaFormPanel panel = new TarefaFormPanel();
-        // add(panel);
-
-        // TarefaListPanel panel = new TarefaListPanel();
-        // add(panel);
-        
         setVisible(true);
     }
 
@@ -40,11 +34,13 @@ public class AppFrame extends JFrame {
         cardPanel.add(formPanel, TarefaFormPanel.class.getName());
     }
 
-    public void mostrarFormPanel() {
+    public void mostrarFormPanel(Tarefa tarefa) {
+        formPanel.setTarefa(tarefa);
         cardLayout.show(cardPanel, TarefaFormPanel.class.getName());
     }
 
     public void mostrarListPanel() {
+        listPanel.recarregar();
         cardLayout.show(cardPanel, TarefaListPanel.class.getName());
     }
 } // fim da classe AppFrame
