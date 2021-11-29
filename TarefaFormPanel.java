@@ -64,6 +64,7 @@ public class TarefaFormPanel extends JPanel {
         label = new JLabel("Id");
         adicionarComponente(label, 0, 0);
         txtId = new JTextField(5);
+        txtId.setEditable(false);
         adicionarComponente(txtId, 0, 1);
 
         label = new JLabel("Nome");
