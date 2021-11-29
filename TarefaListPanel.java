@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -34,6 +35,21 @@ public class TarefaListPanel extends JPanel {
         FlowLayout layout = (FlowLayout) panel.getLayout();
         layout.setAlignment(FlowLayout.RIGHT);
 
+        criarBtnCriar();
+        panel.add(btnCriar);
+
+        criarBtnEditar();
+        panel.add(btnEditar);
+
+        criarBtnRemover();
+        panel.add(btnRemover);
+
+        add(panel, BorderLayout.NORTH);
+
+        desabilitarBtns();
+    }
+
+    private void criarBtnCriar() {
         btnCriar = new JButton("Criar");
         btnCriar.addActionListener(new ActionListener() {
             @Override
@@ -41,8 +57,9 @@ public class TarefaListPanel extends JPanel {
                 frame.mostrarFormPanel(null);
             }
         });
-        panel.add(btnCriar);
+    }
 
+    private void criarBtnEditar() {
         btnEditar = new JButton("Editar");
         btnEditar.addActionListener(new ActionListener() {
             @Override
@@ -50,14 +67,21 @@ public class TarefaListPanel extends JPanel {
                 frame.mostrarFormPanel(tableModel.getTarefa(tabela.getSelectedRow()));
             }
         });
-        panel.add(btnEditar);
+    }
 
+    private void criarBtnRemover() {
         btnRemover = new JButton("Remover");
-        panel.add(btnRemover);
-
-        add(panel, BorderLayout.NORTH);
-
-        desabilitarBtns();
+        btnRemover.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Tarefa tarefa = tableModel.getTarefa(tabela.getSelectedRow());
+                int resposta = JOptionPane.showConfirmDialog(TarefaListPanel.this, "Deseja realmente remover?", "Todo App", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (resposta == JOptionPane.YES_OPTION) {
+                    TarefaStorage.remover(tarefa);
+                    recarregar();
+                }
+            }
+        });
     }
 
     private void criarTabelaPanel() {
