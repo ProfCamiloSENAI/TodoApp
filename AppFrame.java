@@ -13,7 +13,6 @@ public class AppFrame extends JFrame {
     public AppFrame() {
         super("Todo App");
 
-        setSize(640, 480);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         cardLayout = new CardLayout();
@@ -22,8 +21,12 @@ public class AppFrame extends JFrame {
         add(cardPanel);
 
         criarCards();
+    }
 
-        setVisible(true);
+    public void mostrar() {
+        pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
     }
 
     private void criarCards() {
