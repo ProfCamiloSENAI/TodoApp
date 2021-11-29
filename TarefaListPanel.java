@@ -7,6 +7,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class TarefaListPanel extends JPanel {
     private AppFrame frame;
@@ -53,6 +56,8 @@ public class TarefaListPanel extends JPanel {
         panel.add(btnRemover);
 
         add(panel, BorderLayout.NORTH);
+
+        desabilitarBtns();
     }
 
     private void criarTabelaPanel() {
@@ -60,10 +65,33 @@ public class TarefaListPanel extends JPanel {
 
         tableModel = new TarefaTableModel(TarefaStorage.listar());
         tabela = new JTable(tableModel);
+        tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabela.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    if (tabela.getSelectedRow() >= 0) {
+                        habilitarBtns();
+                    } else {
+                        desabilitarBtns();
+                    }
+                }
+            }
+        });
         JScrollPane scrollPane = new JScrollPane(tabela);
         panel.add(scrollPane);
 
         add(panel, BorderLayout.CENTER);
+    }
+
+    private void habilitarBtns() {
+        btnEditar.setEnabled(true);
+        btnRemover.setEnabled(true);
+    }
+
+    private void desabilitarBtns() {
+        btnEditar.setEnabled(false);
+        btnRemover.setEnabled(false);
     }
 
     public void recarregar() {
